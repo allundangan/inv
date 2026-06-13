@@ -156,9 +156,19 @@
             <hr class="my-4 border-slate-100">
 
             <!-- Global Discount -->
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Potongan Harga / Diskon (Rp)</label>
-              <input type="number" id="input-discount" value="0" min="0" step="1000" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Potongan Harga / Diskon (Rp)</label>
+                <input type="number" id="input-discount" value="0" min="0" step="1000" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
+              </div>
+
+              <!-- Term / DP Checkbox -->
+              <div class="flex items-center gap-3 bg-brand-lightteal/50 p-3 rounded-xl border border-brand-teal/20">
+                <input type="checkbox" id="input-dp-active" checked onchange="updateInvoice()" class="w-4 h-4 text-brand-teal border-slate-300 rounded focus:ring-brand-teal/50 cursor-pointer">
+                <label for="input-dp-active" class="text-xs font-bold text-brand-darkteal tracking-wide cursor-pointer select-none">
+                  Aktifkan Uang Muka (DP) 50%
+                </label>
+              </div>
             </div>
           </div>
 
@@ -353,7 +363,7 @@
                       </div>
 
                       <!-- Total row -->
-                      <div class="flex justify-between items-center py-1.5 border-b border-slate-300 font-bold">
+                      <div id="preview-total-row" class="flex justify-between items-center py-1.5 border-b border-slate-300 font-bold">
                         <span class="text-brand-darkteal uppercase tracking-wider">Total</span>
                         <div class="flex justify-between w-40 text-brand-darkteal text-sm font-bold">
                           <span>Rp</span>
@@ -362,7 +372,7 @@
                       </div>
 
                       <!-- DP Row (Matching plain style) -->
-                      <div class="flex justify-between items-center py-1.5 border-b border-dashed border-slate-200 font-bold text-slate-700">
+                      <div id="preview-dp-row" class="flex justify-between items-center py-1.5 border-b border-dashed border-slate-200 font-bold text-slate-700">
                         <span class="uppercase tracking-wide text-[10px]">Uang Muka (50%)</span>
                         <div class="flex justify-between w-40 text-[12px] font-bold">
                           <span>Rp</span>
@@ -371,7 +381,7 @@
                       </div>
 
                       <!-- Remaining Balance Row (Matching plain style with thick bottom border) -->
-                      <div class="flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal">
+                      <div id="preview-balance-row" class="flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal">
                         <span class="uppercase tracking-wide text-[10px]">Sisa Pelunasan</span>
                         <div class="flex justify-between w-40 text-[13px] font-extrabold">
                           <span>Rp</span>
@@ -580,11 +590,6 @@ function doPost(e) {
       updateInvoice();
     }
 
-    function updateItemField(index, field, value) {
-      invoiceItems[index][field] = value;
-      updateInvoice();
-    }
-
     // Format currency to Indonesian style
     function formatIDR(number) {
       return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(number);
@@ -670,16 +675,35 @@ function doPost(e) {
       const discount = parseInt(document.getElementById('input-discount').value) || 0;
       const total = Math.max(0, subtotal - discount);
       
-      // Calculate 50% DP and Remaining Balance
-      const dp = Math.round(total * 0.5);
-      const balance = total - dp;
-
       // Update Preview Totals
       document.getElementById('preview-subtotal').innerText = formatIDR(subtotal);
       document.getElementById('preview-discount').innerText = formatIDR(discount);
       document.getElementById('preview-total').innerText = formatIDR(total);
-      document.getElementById('preview-dp').innerText = formatIDR(dp);
-      document.getElementById('preview-balance').innerText = formatIDR(balance);
+
+      // Check dynamic Down Payment (DP) checkbox
+      const dpActive = document.getElementById('input-dp-active').checked;
+      const dpRow = document.getElementById('preview-dp-row');
+      const balanceRow = document.getElementById('preview-balance-row');
+      const totalRow = document.getElementById('preview-total-row');
+
+      if (dpActive) {
+        // Calculate 50% DP and Remaining Balance
+        const dp = Math.round(total * 0.5);
+        const balance = total - dp;
+
+        document.getElementById('preview-dp').innerText = formatIDR(dp);
+        document.getElementById('preview-balance').innerText = formatIDR(balance);
+
+        // Show rows & set standard bottom border on total row
+        dpRow.classList.remove('hidden');
+        balanceRow.classList.remove('hidden');
+        totalRow.className = "flex justify-between items-center py-1.5 border-b border-slate-300 font-bold";
+      } else {
+        // Hide DP rows & set strong bottom border on total row to make it the final total anchor
+        dpRow.classList.add('hidden');
+        balanceRow.classList.add('hidden');
+        totalRow.className = "flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal";
+      }
     }
 
     // ACTIONS: SHARE TO WHATSAPP
@@ -689,6 +713,7 @@ function doPost(e) {
       const clientPhone = document.getElementById('input-phone').value.replace(/[^0-9]/g, '');
       const rawDate = document.getElementById('input-date').value;
       const totalText = document.getElementById('preview-total').innerText;
+      const dpActive = document.getElementById('input-dp-active').checked;
       const dpText = document.getElementById('preview-dp').innerText;
       const balanceText = document.getElementById('preview-balance').innerText;
 
@@ -702,18 +727,30 @@ function doPost(e) {
         itemDetails += `${index + 1}. *${item.deskripsi}*\n   Qty: ${item.kuantitas} pcs x Rp ${formatIDR(item.harga)} = Rp ${formatIDR(item.kuantitas * item.harga)}\n`;
       });
 
-      // Prepare Message
-      const message = `Halo *${clientName}*,\n\nBerikut rincian *INVOICE* resmi pemesanan kartu undangan Anda dari *ALLUNDANGAN*:\n\n` +
-                      `📌 *No. Invoice:* ${invNum}\n` +
-                      `📅 *Tanggal:* ${formatDateString(rawDate)}\n\n` +
-                      `*Rincian Pesanan:*\n${itemDetails}\n` +
-                      `💵 *Total Tagihan:* Rp ${totalText}\n` +
-                      `💳 *Uang Muka / DP (50%):* Rp ${dpText}\n` +
-                      `⏰ *Sisa Pelunasan:* Rp ${balanceText}\n\n` +
-                      `🏦 *Pembayaran via Transfer:*\n` +
-                      `BCA Acc. *0095196107* a.n. *Sutipna*\n\n` +
-                      `_Catatan:_ Uang muka diperlukan untuk memulai proses desain dan produksi. Terima kasih banyak atas kepercayaan Anda. 😊❤️\n\n` +
-                      `*ALLUNDANGAN - Wedding Card Specialist*`;
+      // Prepare Message dynamically based on DP checkbox state
+      let message = `Halo *${clientName}*,\n\nBerikut rincian *INVOICE* resmi pemesanan kartu undangan Anda dari *ALLUNDANGAN*:\n\n` +
+                    `📌 *No. Invoice:* ${invNum}\n` +
+                    `📅 *Tanggal:* ${formatDateString(rawDate)}\n\n` +
+                    `*Rincian Pesanan:*\n${itemDetails}\n` +
+                    `💵 *Total Tagihan:* Rp ${totalText}\n`;
+
+      if (dpActive) {
+        message += `💳 *Uang Muka / DP (50%):* Rp ${dpText}\n` +
+                   `⏰ *Sisa Pelunasan:* Rp ${balanceText}\n\n`;
+      } else {
+        message += `\n`;
+      }
+
+      message += `🏦 *Pembayaran via Transfer:*\n` +
+                 `BCA Acc. *0095196107* a.n. *Sutipna*\n\n`;
+
+      if (dpActive) {
+        message += `_Catatan:_ Uang muka diperlukan untuk memulai proses desain dan produksi. Terima kasih banyak atas kepercayaan Anda. 😊❤️\n\n`;
+      } else {
+        message += `_Catatan:_ Terima kasih banyak atas kepercayaan Anda. 😊❤️\n\n`;
+      }
+
+      message += `*ALLUNDANGAN - Wedding Card Specialist*`;
 
       const encodedMessage = encodeURIComponent(message);
       
@@ -783,8 +820,11 @@ function doPost(e) {
       const clientName = document.getElementById('input-name').value || '-';
       const clientPhone = document.getElementById('input-phone').value || '-';
       const totalVal = document.getElementById('preview-total').innerText.replace(/\./g, '');
-      const dpVal = document.getElementById('preview-dp').innerText.replace(/\./g, '');
-      const balanceVal = document.getElementById('preview-balance').innerText.replace(/\./g, '');
+      
+      // Conditional values based on active DP
+      const dpActive = document.getElementById('input-dp-active').checked;
+      const dpVal = dpActive ? document.getElementById('preview-dp').innerText.replace(/\./g, '') : '0';
+      const balanceVal = dpActive ? document.getElementById('preview-balance').innerText.replace(/\./g, '') : '0';
 
       // Create list items description
       const itemsSummary = invoiceItems.map(item => `${item.deskripsi} (${item.kuantitas} pcs x Rp ${formatIDR(item.harga)})`).join(', ');
