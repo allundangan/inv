@@ -8,7 +8,7 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts for premium look -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,23 +42,21 @@
   </script>
 
   <style>
-    /* Strict dimensions to prevent overflowing or cutting off during PNG exports */
+    /* Styling to make sure the print/image rendering looks pixel perfect */
     .invoice-container {
       width: 800px;
-      height: 1130px; /* Fixed height simulating actual physical A4 ratio */
+      min-height: 1130px;
       background-color: #ffffff;
       position: relative;
-      box-sizing: border-box;
-      overflow: hidden;
     }
     
-    /* Elegant dotted lines matching the draft design */
+    /* Elegant dotted lines matching the draft */
     .dotted-input {
       border-bottom: 1px dotted #a3cbd2;
     }
   </style>
 </head>
-<body class="bg-slate-100 font-sans text-brand-text min-h-screen pb-12">
+<body class="bg-slate-100 font-sans text-brand-text min-h-screen">
 
   <!-- Main Navigation Header -->
   <header class="bg-brand-darkteal text-white shadow-md sticky top-0 z-50">
@@ -92,335 +90,326 @@
   <main class="max-w-7xl mx-auto p-4 lg:p-6">
     
     <!-- SECTION 1: INVOICE GENERATOR & PREVIEW -->
-    <div id="tab-generator" class="block">
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <div id="tab-generator" class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      
+      <!-- INPUT PANEL (Left Side) -->
+      <div class="xl:col-span-4 space-y-6">
         
-        <!-- INPUT PANEL (Left Side) -->
-        <div id="input-panel" class="xl:col-span-4 space-y-6">
+        <!-- Client & Meta Info -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <h3 class="text-lg font-bold text-brand-darkteal mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-user-tag text-brand-teal"></i> Informasi Klien
+          </h3>
           
-          <!-- Client & Meta Info -->
-          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-            <h3 class="text-lg font-bold text-brand-darkteal mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-user-tag text-brand-teal"></i> Informasi Klien
-            </h3>
-            
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">No. Invoice (Dinamis)</label>
-                <div class="flex">
-                  <input type="number" id="input-inv-num" value="1" min="1" class="w-full px-3 py-2 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
-                  <span class="bg-slate-100 text-slate-600 px-3 py-2 border-y border-r border-slate-200 rounded-r-lg font-semibold text-sm flex items-center">/INV-ALL</span>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tanggal</label>
-                <input type="date" id="input-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" onchange="updateInvoice()">
-              </div>
-
-              <hr class="my-4 border-slate-100">
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Klien</label>
-                <input type="text" id="input-name" placeholder="Contoh: Rian & Amel" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Alamat Lengkap</label>
-                <textarea id="input-address" rows="2" placeholder="Contoh: Jl. Mawar No. 12, Surabaya" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()"></textarea>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">No. Telp / WhatsApp</label>
-                <input type="text" id="input-phone" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">No. Invoice (Dinamis)</label>
+              <div class="flex">
+                <input type="number" id="input-inv-num" value="1" min="1" class="w-full px-3 py-2 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
+                <span class="bg-slate-100 text-slate-600 px-3 py-2 border-y border-r border-slate-200 rounded-r-lg font-semibold text-sm flex items-center">/INV-ALL</span>
               </div>
             </div>
-          </div>
 
-          <!-- Order Items Panel -->
-          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-bold text-brand-darkteal flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-brand-teal"></i> Detail Pesanan
-              </h3>
-              <button onclick="addItem()" class="bg-brand-teal hover:bg-brand-darkteal text-white text-xs px-3 py-1.5 rounded-lg font-bold transition duration-200 flex items-center gap-1">
-                <i class="fa-solid fa-plus"></i> Tambah Item
-              </button>
-            </div>
-
-            <!-- List Inputs of Items -->
-            <div id="items-input-container" class="space-y-4 max-h-[300px] overflow-y-auto pr-1">
-              <!-- Dynamic item lines go here -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tanggal</label>
+              <input type="date" id="input-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" onchange="updateInvoice()">
             </div>
 
             <hr class="my-4 border-slate-100">
 
-            <!-- Global Discount -->
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Potongan Harga / Diskon (Rp)</label>
-                <input type="number" id="input-discount" value="0" min="0" step="1000" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
-              </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Klien</label>
+              <input type="text" id="input-name" placeholder="Contoh: Rian & Amel" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
+            </div>
 
-              <!-- Term / DP Checkbox -->
-              <div class="flex items-center gap-3 bg-brand-lightteal/50 p-3 rounded-xl border border-brand-teal/20">
-                <input type="checkbox" id="input-dp-active" checked onchange="updateInvoice()" class="w-4 h-4 text-brand-teal border-slate-300 rounded focus:ring-brand-teal/50 cursor-pointer">
-                <label for="input-dp-active" class="text-xs font-bold text-brand-darkteal tracking-wide cursor-pointer select-none">
-                  Aktifkan Uang Muka (DP) 50%
-                </label>
-              </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Alamat Lengkap</label>
+              <textarea id="input-address" rows="2" placeholder="Contoh: Jl. Mawar No. 12, Surabaya" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">No. Telp / WhatsApp <span class="text-slate-400 font-normal lowercase italic">(opsional)</span></label>
+              <input type="text" id="input-phone" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
             </div>
           </div>
-
-          <!-- Action Buttons panel -->
-          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-3">
-            <h3 class="text-lg font-bold text-brand-darkteal mb-2 flex items-center gap-2">
-              <i class="fa-solid fa-share-nodes text-brand-teal"></i> Menu Aksi Cepat
-            </h3>
-            
-            <button onclick="shareToWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-              <i class="fa-brands fa-whatsapp text-lg"></i> Kirim ke WhatsApp Klien
-            </button>
-            
-            <button onclick="exportToImage()" class="w-full bg-brand-teal hover:bg-brand-darkteal text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-teal/20">
-              <i class="fa-solid fa-image text-lg"></i> Simpan Sebagai Gambar (PNG)
-            </button>
-            
-            <button id="sync-sheets-btn" onclick="sendToGoogleSheets()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20">
-              <i class="fa-solid fa-file-excel text-lg"></i> Simpan ke Google Sheets
-            </button>
-          </div>
-
         </div>
 
-        <!-- INVOICE LIVE PREVIEW (Right Side / Bottom on Mobile) -->
-        <div id="preview-panel" class="xl:col-span-8 flex justify-center">
-          <div class="overflow-x-auto w-full flex justify-start xl:justify-center bg-slate-200 p-4 lg:p-8 rounded-3xl border border-slate-300 shadow-inner">
-            
-            <!-- RENDERED INVOICE COMPONENT (Strict 800px x 1130px) -->
-            <div id="invoice-preview" class="invoice-container shadow-2xl p-8 flex flex-col justify-between font-sans text-brand-text mx-auto">
-              
-              <!-- MAIN CONTAINER WITH HIGHER Z-INDEX -->
-              <div class="relative z-10 flex flex-col justify-between h-full flex-grow">
-                
-                <!-- 1. HEADER SECTION -->
-                <div>
-                  <div class="grid grid-cols-12 gap-4 items-start">
-                    <!-- Logo & Identity -->
-                    <div class="col-span-7">
-                      <img src="https://i.ibb.co.com/pjpy3YF7/allundangan-logo.png" alt="allundangan logo" class="w-56 mb-1">
-                      <div class="text-brand-teal text-xs font-semibold tracking-[0.25em] pl-1 mb-6 uppercase">
-                        Wedding Card Specialist
-                      </div>
-                      
-                      <!-- Contacts -->
-                      <div class="space-y-1.5 text-[11px] font-medium text-slate-600 pl-1">
-                        <div class="flex items-center gap-2.5">
-                          <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-phone"></i></span>
-                          <span>082 1353 30003</span>
-                        </div>
-                        <div class="flex items-center gap-2.5">
-                          <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-globe"></i></span>
-                          <span>www.allundangan.com</span>
-                        </div>
-                        <div class="flex items-center gap-2.5">
-                          <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-envelope"></i></span>
-                          <span>allundangan@gmail.com</span>
-                        </div>
-                      </div>
-                    </div>
+        <!-- Order Items Panel -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-brand-darkteal flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-brand-teal"></i> Detail Pesanan
+            </h3>
+            <button onclick="addItem()" class="bg-brand-teal hover:bg-brand-darkteal text-white text-xs px-3 py-1.5 rounded-lg font-bold transition duration-200 flex items-center gap-1">
+              <i class="fa-solid fa-plus"></i> Tambah Item
+            </button>
+          </div>
 
-                    <!-- Invoice Meta (Right - Clean & No Background Pill) -->
-                    <div class="col-span-5 text-right flex flex-col items-end pt-2">
-                      <h2 class="text-4xl font-serif text-brand-teal tracking-wider mb-3">INVOICE</h2>
-                      <div class="w-40 h-[1.5px] bg-brand-teal mb-5"></div>
-                      
-                      <div class="space-y-1.5 w-64 pr-1 text-xs">
-                        <div class="flex justify-between items-center py-0.5">
-                          <span class="text-slate-400 font-medium text-right w-full mr-2">No. Invoice:</span>
-                          <span id="preview-invoice-no" class="font-bold text-slate-800 text-right whitespace-nowrap">001/INV-ALL</span>
-                        </div>
-                        <div class="flex justify-between items-center py-0.5">
-                          <span class="text-slate-400 font-medium text-right w-full mr-2">Tanggal:</span>
-                          <span id="preview-date" class="font-bold text-slate-800 text-right whitespace-nowrap">30 Juni 2023</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          <!-- List Inputs of Items -->
+          <div id="items-input-container" class="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+            <!-- Dynamic item lines go here -->
+          </div>
 
-                  <!-- 2. BILL TO & GREETINGS BLOCK (Perfect Bottom Dotted Alignment) -->
-                  <div class="grid grid-cols-12 gap-5 mt-8">
-                    <!-- Ditagihkan Kepada -->
-                    <div class="col-span-7 border border-[#a3cbd2]/60 rounded-2xl overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm">
-                      <div class="bg-brand-teal text-white px-4 py-2 text-xs font-bold tracking-wider uppercase">
-                        Ditagihkan Kepada
-                      </div>
-                      <div class="p-4 space-y-4 text-xs">
-                        <!-- Nama Row (Sufficient bottom margin and balanced label) -->
-                        <div class="grid grid-cols-12 items-end">
-                          <span class="col-span-3 text-slate-500 font-medium pb-1.5">Nama</span>
-                          <span class="col-span-1 text-slate-400 pb-1.5">:</span>
-                          <span id="preview-name" class="col-span-8 font-bold text-slate-800 dotted-input pb-1.5">....................................................................</span>
-                        </div>
-                        
-                        <!-- Alamat Row -->
-                        <div class="grid grid-cols-12 items-start">
-                          <span class="col-span-3 text-slate-500 font-medium pt-1">Alamat</span>
-                          <span class="col-span-1 text-slate-400 pt-1">:</span>
-                          <div class="col-span-8">
-                            <span id="preview-address" class="block font-medium text-slate-700 min-h-[48px] leading-relaxed dotted-input pb-1.5">....................................................................</span>
-                          </div>
-                        </div>
-                        
-                        <!-- No Telp Row -->
-                        <div class="grid grid-cols-12 items-end">
-                          <span class="col-span-3 text-slate-500 font-medium pb-1.5">No. Telp</span>
-                          <span class="col-span-1 text-slate-400 pb-1.5">:</span>
-                          <span id="preview-phone" class="col-span-8 font-bold text-slate-800 dotted-input pb-1.5">....................................................................</span>
-                        </div>
-                      </div>
-                    </div>
+          <hr class="my-4 border-slate-100">
 
-                    <!-- Greeting Box -->
-                    <div class="col-span-5 border border-[#a3cbd2]/60 rounded-2xl p-4 flex flex-col justify-center items-center text-center bg-white/70 backdrop-blur-sm shadow-sm relative">
-                      <div class="text-brand-teal text-2xl mb-2"><i class="fa-regular fa-envelope-open"></i></div>
-                      <h4 class="font-serif italic text-brand-darkteal text-base font-semibold mb-1">Terima kasih</h4>
-                      <p class="text-[10.5px] leading-relaxed text-slate-500 max-w-[210px]">
-                        telah mempercayakan kebutuhan undangan Anda kepada kami.
-                      </p>
-                      <div class="text-brand-teal text-[10px] mt-2"><i class="fa-solid fa-heart"></i></div>
-                    </div>
-                  </div>
-
-                  <!-- 3. ITEMS TABLE -->
-                  <div class="mt-8 border border-slate-200 rounded-xl overflow-hidden bg-white/80 shadow-sm">
-                    <table class="w-full text-left border-collapse">
-                      <thead>
-                        <tr class="bg-brand-teal text-white text-[11px] font-bold tracking-wider uppercase">
-                          <th class="py-2.5 px-4 text-center w-12">No</th>
-                          <th class="py-2.5 px-4">Deskripsi</th>
-                          <th class="py-2.5 px-4 text-center w-24">Kuantitas</th>
-                          <th class="py-2.5 px-4 text-right w-32">Harga (Rp)</th>
-                          <th class="py-2.5 px-4 text-right w-36">Subtotal (Rp)</th>
-                        </tr>
-                      </thead>
-                      <tbody id="preview-table-body" class="text-xs divide-y divide-[#a3cbd2]/30">
-                        <!-- Rendered dynamically by JS -->
-                      </tbody>
-                    </table>
-                  </div>
-
-                </div>
-
-                <!-- 4. FOOTER & TOTALS BLOCK -->
-                <div class="mt-auto pt-4">
-                  <div class="grid grid-cols-12 gap-5 items-start">
-                    
-                    <!-- Keterangan & Transfer Info (Left) -->
-                    <div class="col-span-6 space-y-4">
-                      <!-- Keterangan -->
-                      <div class="space-y-1.5">
-                        <div class="text-xs font-bold text-brand-darkteal border-b border-[#a3cbd2] pb-1 uppercase tracking-wider">
-                          Keterangan
-                        </div>
-                        <ul class="text-[11px] text-slate-600 list-disc list-inside space-y-1 font-medium">
-                          <li>Uang muka 50% sebagai tanda jadi.</li>
-                          <li>Pelunasan setelah undangan selesai dan siap dikirim.</li>
-                        </ul>
-                      </div>
-
-                      <!-- Pembayaran Via Transfer -->
-                      <div class="space-y-1 pt-1.5">
-                        <div class="text-xs font-bold text-brand-darkteal border-b border-[#a3cbd2] pb-1 uppercase tracking-wider">
-                          Pembayaran via Transfer
-                        </div>
-                        <div class="text-[11px] font-semibold text-slate-700 pt-0.5 leading-relaxed">
-                          BCA Acc. <span class="font-bold text-brand-darkteal">0095196107</span> <br>
-                          a.n. <span class="font-bold text-slate-800 text-xs">Sutipna</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Summary Calculations (Right - Beautifully Aligned in Plain Style) -->
-                    <div class="col-span-6 space-y-1 text-xs pr-1">
-                      
-                      <!-- Subtotal row -->
-                      <div class="flex justify-between items-center py-1 border-b border-dashed border-slate-200">
-                        <span class="text-slate-500 font-medium">Subtotal</span>
-                        <div class="flex justify-between w-40 font-semibold text-slate-700">
-                          <span>Rp</span>
-                          <span id="preview-subtotal">0</span>
-                        </div>
-                      </div>
-
-                      <!-- Discount row -->
-                      <div class="flex justify-between items-center py-1 border-b border-dashed border-slate-200">
-                        <span class="text-slate-500 font-medium">Diskon</span>
-                        <div class="flex justify-between w-40 font-semibold text-rose-500">
-                          <span>Rp</span>
-                          <span id="preview-discount">0</span>
-                        </div>
-                      </div>
-
-                      <!-- Total row -->
-                      <div id="preview-total-row" class="flex justify-between items-center py-1.5 border-b border-slate-300 font-bold">
-                        <span class="text-brand-darkteal uppercase tracking-wider">Total</span>
-                        <div class="flex justify-between w-40 text-brand-darkteal text-sm font-bold">
-                          <span>Rp</span>
-                          <span id="preview-total">0</span>
-                        </div>
-                      </div>
-
-                      <!-- DP Row (Matching plain style) -->
-                      <div id="preview-dp-row" class="flex justify-between items-center py-1.5 border-b border-dashed border-slate-200 font-bold text-slate-700">
-                        <span class="uppercase tracking-wide text-[10px]">Uang Muka (50%)</span>
-                        <div class="flex justify-between w-40 text-[12px] font-bold">
-                          <span>Rp</span>
-                          <span id="preview-dp">0</span>
-                        </div>
-                      </div>
-
-                      <!-- Remaining Balance Row (Matching plain style with thick bottom border) -->
-                      <div id="preview-balance-row" class="flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal">
-                        <span class="uppercase tracking-wide text-[10px]">Sisa Pelunasan</span>
-                        <div class="flex justify-between w-40 text-[13px] font-extrabold">
-                          <span>Rp</span>
-                          <span id="preview-balance">0</span>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  <!-- 5. COMPANY VALUES FOOTER BAR (Anchored at the bottom) -->
-                  <div class="mt-8 pt-4 border-t border-slate-200/60 grid grid-cols-4 gap-2 text-center">
-                    <div class="flex flex-col items-center justify-center">
-                      <span class="text-brand-teal text-[11px] mb-1"><i class="fa-regular fa-gem"></i></span>
-                      <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Desain Eksklusif & Custom</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                      <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-ribbon"></i></span>
-                      <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Bahan Premium Berkualitas</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                      <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-print"></i></span>
-                      <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Cetak Presisi Warna Tajam</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                      <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-truck-fast"></i></span>
-                      <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Pengiriman Aman & Tepat Waktu</span>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
+          <!-- Global Discount & DP Switch -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Potongan Harga / Diskon (Rp)</label>
+              <input type="number" id="input-discount" value="0" min="0" step="1000" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal/50" oninput="updateInvoice()">
             </div>
 
+            <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <input type="checkbox" id="input-use-dp" checked onchange="updateInvoice()" class="w-4 h-4 text-brand-teal border-slate-300 rounded focus:ring-brand-teal">
+              <label for="input-use-dp" class="text-xs font-bold text-brand-darkteal select-none cursor-pointer">
+                Aktifkan Uang Muka (DP) 50%
+              </label>
+            </div>
           </div>
+        </div>
+
+        <!-- Quick Action Center -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-3">
+          <h3 class="text-lg font-bold text-brand-darkteal mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-share-nodes text-brand-teal"></i> Menu Aksi Cepat
+          </h3>
+          
+          <button onclick="shareToWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Kirim ke WhatsApp Klien
+          </button>
+          
+          <button onclick="exportToImage()" class="w-full bg-brand-teal hover:bg-brand-darkteal text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-teal/20">
+            <i class="fa-solid fa-image text-lg"></i> Simpan Sebagai Gambar (PNG)
+          </button>
+          
+          <button id="sync-sheets-btn" onclick="sendToGoogleSheets()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20">
+            <i class="fa-solid fa-file-excel text-lg"></i> Simpan ke Google Sheets
+          </button>
         </div>
 
       </div>
+
+      <!-- INVOICE LIVE PREVIEW (Right Side) -->
+      <div class="xl:col-span-8 flex justify-center">
+        <div class="overflow-x-auto w-full flex justify-center bg-slate-200 p-4 lg:p-8 rounded-3xl border border-slate-300 shadow-inner">
+          
+          <!-- RENDERED INVOICE COMPONENT -->
+          <div id="invoice-preview" class="invoice-container shadow-2xl p-8 flex flex-col justify-between font-sans text-brand-text">
+
+            <!-- MAIN CONTAINER -->
+            <div class="relative z-10 flex flex-col justify-between h-full flex-grow">
+              
+              <!-- 1. HEADER SECTION -->
+              <div>
+                <div class="grid grid-cols-12 gap-4 items-start">
+                  <!-- Logo & Identity -->
+                  <div class="col-span-7">
+                    <img src="https://i.ibb.co.com/pjpy3YF7/allundangan-logo.png" alt="allundangan logo" class="w-56 mb-1">
+                    <div class="text-brand-teal text-xs font-semibold tracking-[0.25em] pl-1 mb-6 uppercase">
+                      Wedding Card Specialist
+                    </div>
+                    
+                    <!-- Contacts -->
+                    <div class="space-y-1.5 text-[11px] font-medium text-slate-600 pl-1">
+                      <div class="flex items-center gap-2.5">
+                        <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-phone"></i></span>
+                        <span>082 1353 30003</span>
+                      </div>
+                      <div class="flex items-center gap-2.5">
+                        <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-globe"></i></span>
+                        <span>www.allundangan.com</span>
+                      </div>
+                      <div class="flex items-center gap-2.5">
+                        <span class="w-4 h-4 bg-brand-teal text-white rounded-full flex items-center justify-center text-[8px]"><i class="fa-solid fa-envelope"></i></span>
+                        <span>allundangan@gmail.com</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Invoice Meta (Right) - Clean Styling (No Background) -->
+                  <div class="col-span-5 text-right flex flex-col items-end pt-2">
+                    <h2 class="text-4xl font-serif text-brand-teal tracking-wider mb-2">INVOICE</h2>
+                    <div class="w-40 h-[1.5px] bg-brand-teal mb-3"></div>
+                    
+                    <div class="space-y-1 text-xs text-brand-text font-medium pr-1">
+                      <div class="flex justify-end gap-2 items-center">
+                        <span class="text-slate-400">No. Invoice :</span>
+                        <span id="preview-invoice-no" class="font-bold text-slate-800">001/INV-ALL</span>
+                      </div>
+                      <div class="flex justify-end gap-2 items-center">
+                        <span class="text-slate-400">Tanggal :</span>
+                        <span id="preview-date" class="font-bold text-slate-800">30 Juni 2023</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. BILL TO & GREETINGS BLOCK -->
+                <div class="grid grid-cols-12 gap-5 mt-8">
+                  <!-- Ditagihkan Kepada -->
+                  <div class="col-span-7 border border-[#a3cbd2]/60 rounded-2xl overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm">
+                    <div class="bg-brand-teal text-white px-4 py-2 text-xs font-bold tracking-wider uppercase">
+                      Ditagihkan Kepada
+                    </div>
+                    <div class="p-4 space-y-3.5 text-xs">
+                      <div class="flex items-baseline">
+                        <span class="w-16 text-slate-500 font-medium">Nama</span>
+                        <span class="w-4 text-slate-400">:</span>
+                        <span id="preview-name" class="flex-grow font-bold text-slate-800 dotted-input pb-1">....................................................................</span>
+                      </div>
+                      <div class="flex items-start">
+                        <span class="w-16 text-slate-500 font-medium pt-0.5">Alamat</span>
+                        <span class="w-4 text-slate-400 pt-0.5">:</span>
+                        <span id="preview-address" class="flex-grow font-medium text-slate-700 min-h-[40px] leading-relaxed">....................................................................</span>
+                      </div>
+                      <div class="flex items-baseline">
+                        <span class="w-16 text-slate-500 font-medium">No. Telp</span>
+                        <span class="w-4 text-slate-400">:</span>
+                        <span id="preview-phone" class="flex-grow font-bold text-slate-800 dotted-input pb-1">....................................................................</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Greeting Box -->
+                  <div class="col-span-5 border border-[#a3cbd2]/60 rounded-2xl p-4 flex flex-col justify-center items-center text-center bg-white/70 backdrop-blur-sm shadow-sm relative">
+                    <div class="text-brand-teal text-2xl mb-2"><i class="fa-regular fa-envelope-open"></i></div>
+                    <h4 class="font-serif italic text-brand-darkteal text-base font-semibold mb-1">Terima kasih</h4>
+                    <p class="text-[10.5px] leading-relaxed text-slate-500 max-w-[210px]">
+                      telah mempercayakan kebutuhan undangan Anda kepada kami.
+                    </p>
+                    <div class="text-brand-teal text-[10px] mt-2"><i class="fa-solid fa-heart"></i></div>
+                  </div>
+                </div>
+
+                <!-- 3. ITEMS TABLE -->
+                <div class="mt-8 border border-slate-200 rounded-xl overflow-hidden bg-white/80 shadow-sm">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-brand-teal text-white text-[11px] font-bold tracking-wider uppercase">
+                        <th class="py-2.5 px-4 text-center w-12">No</th>
+                        <th class="py-2.5 px-4">Deskripsi</th>
+                        <th class="py-2.5 px-4 text-center w-24">Kuantitas</th>
+                        <th class="py-2.5 px-4 text-right w-32">Harga (Rp)</th>
+                        <th class="py-2.5 px-4 text-right w-36">Subtotal (Rp)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="preview-table-body" class="text-xs divide-y divide-[#a3cbd2]/30">
+                      <!-- Rendered by JS -->
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <!-- 4. FOOTER & TOTALS BLOCK -->
+              <div class="mt-auto pt-8">
+                <div class="grid grid-cols-12 gap-5 items-start">
+                  
+                  <!-- Keterangan & Transfer (Left) -->
+                  <div class="col-span-6 space-y-4">
+                    <div class="space-y-2">
+                      <div class="text-xs font-bold text-brand-darkteal border-b border-[#a3cbd2] pb-1 uppercase tracking-wider">
+                        Keterangan
+                      </div>
+                      <ul class="text-[11px] text-slate-600 list-disc list-inside space-y-1 font-medium">
+                        <li>Uang muka 50% sebagai tanda jadi.</li>
+                        <li>Pelunasan setelah undangan selesai dan siap dikirim.</li>
+                      </ul>
+                    </div>
+
+                    <!-- Transfer info Box -->
+                    <div class="bg-slate-50/80 border border-brand-teal/20 p-3 rounded-xl">
+                      <div class="text-[11px] font-bold text-brand-darkteal uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-money-bill-transfer text-brand-teal"></i> Pembayaran via Transfer:
+                      </div>
+                      <div class="text-xs font-bold text-slate-700">
+                        BCA Acc. <span class="text-brand-teal font-mono">0095196107</span>
+                      </div>
+                      <div class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                        a.n. Sutipna
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Summary Calculations (Right) - Clean & Aligned Alignment -->
+                  <div class="col-span-6 space-y-1.5 text-xs pr-1">
+                    
+                    <!-- Subtotal row -->
+                    <div class="flex justify-between items-center py-1 border-b border-dashed border-slate-200">
+                      <span class="text-slate-500 font-medium">Subtotal</span>
+                      <div class="flex justify-between w-40 font-semibold text-slate-700">
+                        <span>Rp</span>
+                        <span id="preview-subtotal">0</span>
+                      </div>
+                    </div>
+
+                    <!-- Discount row -->
+                    <div class="flex justify-between items-center py-1 border-b border-dashed border-slate-200">
+                      <span class="text-slate-500 font-medium">Diskon</span>
+                      <div class="flex justify-between w-40 font-semibold text-rose-500">
+                        <span>Rp</span>
+                        <span id="preview-discount">0</span>
+                      </div>
+                    </div>
+
+                    <!-- Total row -->
+                    <div id="row-total" class="flex justify-between items-center py-1.5 border-b border-slate-300 font-bold">
+                      <span class="text-brand-darkteal uppercase tracking-wider">Total</span>
+                      <div class="flex justify-between w-40 text-brand-darkteal text-sm">
+                        <span>Rp</span>
+                        <span id="preview-total">0</span>
+                      </div>
+                    </div>
+
+                    <!-- DP Row (Kondisional) -->
+                    <div id="row-dp" class="flex justify-between items-center py-1 border-b border-dashed border-slate-200 font-semibold">
+                      <span class="text-slate-600">Uang Muka (50%)</span>
+                      <div class="flex justify-between w-40 text-slate-800">
+                        <span>Rp</span>
+                        <span id="preview-dp">0</span>
+                      </div>
+                    </div>
+
+                    <!-- Remaining Balance Row (Kondisional) -->
+                    <div id="row-balance" class="flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold">
+                      <span class="text-brand-darkteal uppercase tracking-wide">Sisa Pelunasan</span>
+                      <div class="flex justify-between w-40 text-brand-darkteal text-sm">
+                        <span>Rp</span>
+                        <span id="preview-balance">0</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- 5. COMPANY VALUES FOOTER BAR -->
+                <div class="mt-10 pt-4 border-t border-slate-200/60 grid grid-cols-4 gap-2 text-center">
+                  <div class="flex flex-col items-center justify-center">
+                    <span class="text-brand-teal text-[11px] mb-1"><i class="fa-regular fa-gem"></i></span>
+                    <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Desain Eksklusif & Custom</span>
+                  </div>
+                  <div class="flex flex-col items-center justify-center">
+                    <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-ribbon"></i></span>
+                    <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Bahan Premium Berkualitas</span>
+                  </div>
+                  <div class="flex flex-col items-center justify-center">
+                    <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-print"></i></span>
+                    <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Cetak Presisi Warna Tajam</span>
+                  </div>
+                  <div class="flex flex-col items-center justify-center">
+                    <span class="text-brand-teal text-[11px] mb-1"><i class="fa-solid fa-truck-fast"></i></span>
+                    <span class="font-bold text-[8.5px] uppercase tracking-wider text-brand-darkteal">Pengiriman Aman & Tepat Waktu</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
     <!-- SECTION 2: GOOGLE SHEETS SETTINGS TAB -->
@@ -493,7 +482,7 @@ function doPost(e) {
   </main>
 
   <script>
-    // Init local values
+    // Init local values with default item
     let invoiceItems = [
       { deskripsi: "Undangan Premium Hardcover Rose Gold", kuantitas: 500, harga: 7500 },
       { deskripsi: "Custom Envelope Gold Foil Accent", kuantitas: 500, harga: 2000 }
@@ -590,6 +579,12 @@ function doPost(e) {
       updateInvoice();
     }
 
+    function updateItemField(index, field, value) {
+      invoiceItems[index][field] = value;
+      // Fixed sync: Directly trigger invoice update to sync the data structure visually!
+      updateInvoice();
+    }
+
     // Format currency to Indonesian style
     function formatIDR(number) {
       return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(number);
@@ -637,7 +632,7 @@ function doPost(e) {
       const tableBody = document.getElementById('preview-table-body');
       tableBody.innerHTML = '';
 
-      // Set up rows without repeating "Rp" symbol to make it extremely clean
+      // Set up rows
       invoiceItems.forEach((item, index) => {
         const itemSub = item.kuantitas * item.harga;
         subtotal += itemSub;
@@ -675,34 +670,32 @@ function doPost(e) {
       const discount = parseInt(document.getElementById('input-discount').value) || 0;
       const total = Math.max(0, subtotal - discount);
       
+      // Calculate DP check state
+      const useDP = document.getElementById('input-use-dp').checked;
+      const dp = useDP ? Math.round(total * 0.5) : 0;
+      const balance = useDP ? (total - dp) : 0;
+
       // Update Preview Totals
       document.getElementById('preview-subtotal').innerText = formatIDR(subtotal);
       document.getElementById('preview-discount').innerText = formatIDR(discount);
       document.getElementById('preview-total').innerText = formatIDR(total);
+      document.getElementById('preview-dp').innerText = formatIDR(dp);
+      document.getElementById('preview-balance').innerText = formatIDR(balance);
 
-      // Check dynamic Down Payment (DP) checkbox
-      const dpActive = document.getElementById('input-dp-active').checked;
-      const dpRow = document.getElementById('preview-dp-row');
-      const balanceRow = document.getElementById('preview-balance-row');
-      const totalRow = document.getElementById('preview-total-row');
+      // DOM Visibility Handling for DP rows
+      const rowTotal = document.getElementById('row-total');
+      const rowDP = document.getElementById('row-dp');
+      const rowBalance = document.getElementById('row-balance');
 
-      if (dpActive) {
-        // Calculate 50% DP and Remaining Balance
-        const dp = Math.round(total * 0.5);
-        const balance = total - dp;
-
-        document.getElementById('preview-dp').innerText = formatIDR(dp);
-        document.getElementById('preview-balance').innerText = formatIDR(balance);
-
-        // Show rows & set standard bottom border on total row
-        dpRow.classList.remove('hidden');
-        balanceRow.classList.remove('hidden');
-        totalRow.className = "flex justify-between items-center py-1.5 border-b border-slate-300 font-bold";
+      if (useDP) {
+        rowTotal.className = "flex justify-between items-center py-1 border-b border-dashed border-slate-200 font-bold text-slate-700";
+        rowDP.style.display = 'flex';
+        rowBalance.style.display = 'flex';
       } else {
-        // Hide DP rows & set strong bottom border on total row to make it the final total anchor
-        dpRow.classList.add('hidden');
-        balanceRow.classList.add('hidden');
-        totalRow.className = "flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal";
+        // Style Total row as the final row when DP is inactive
+        rowTotal.className = "flex justify-between items-center py-1.5 border-b-2 border-brand-teal font-bold text-brand-darkteal text-sm";
+        rowDP.style.display = 'none';
+        rowBalance.style.display = 'none';
       }
     }
 
@@ -713,12 +706,12 @@ function doPost(e) {
       const clientPhone = document.getElementById('input-phone').value.replace(/[^0-9]/g, '');
       const rawDate = document.getElementById('input-date').value;
       const totalText = document.getElementById('preview-total').innerText;
-      const dpActive = document.getElementById('input-dp-active').checked;
       const dpText = document.getElementById('preview-dp').innerText;
       const balanceText = document.getElementById('preview-balance').innerText;
+      const useDP = document.getElementById('input-use-dp').checked;
 
       if (!clientPhone) {
-        showToast("Mohon masukkan nomor telepon klien terlebih dahulu!", "error");
+        showToast("Mohon masukkan nomor telepon klien terlebih dahulu untuk mengirim pesan!", "error");
         return;
       }
 
@@ -727,30 +720,25 @@ function doPost(e) {
         itemDetails += `${index + 1}. *${item.deskripsi}*\n   Qty: ${item.kuantitas} pcs x Rp ${formatIDR(item.harga)} = Rp ${formatIDR(item.kuantitas * item.harga)}\n`;
       });
 
-      // Prepare Message dynamically based on DP checkbox state
-      let message = `Halo *${clientName}*,\n\nBerikut rincian *INVOICE* resmi pemesanan kartu undangan Anda dari *ALLUNDANGAN*:\n\n` +
-                    `📌 *No. Invoice:* ${invNum}\n` +
-                    `📅 *Tanggal:* ${formatDateString(rawDate)}\n\n` +
-                    `*Rincian Pesanan:*\n${itemDetails}\n` +
-                    `💵 *Total Tagihan:* Rp ${totalText}\n`;
+      // Formulate conditionally depending on DP activation state
+      let paymentSummary = `💵 *Total Tagihan:* Rp ${totalText}\n`;
+      let paymentNote = `_Catatan:_ Pembayaran penuh diperlukan untuk memproses pesanan Anda. Terima kasih banyak atas kepercayaan Anda. 😊❤️`;
 
-      if (dpActive) {
-        message += `💳 *Uang Muka / DP (50%):* Rp ${dpText}\n` +
-                   `⏰ *Sisa Pelunasan:* Rp ${balanceText}\n\n`;
-      } else {
-        message += `\n`;
+      if (useDP) {
+        paymentSummary += `💳 *Uang Muka / DP (50%):* Rp ${dpText}\n⏰ *Sisa Pelunasan:* Rp ${balanceText}\n`;
+        paymentNote = `_Catatan:_ Uang muka diperlukan untuk memulai proses desain dan produksi. Sisa pelunasan dibayarkan setelah undangan siap dikirim. Terima kasih banyak atas kepercayaan Anda. 😊❤️`;
       }
 
-      message += `🏦 *Pembayaran via Transfer:*\n` +
-                 `BCA Acc. *0095196107* a.n. *Sutipna*\n\n`;
-
-      if (dpActive) {
-        message += `_Catatan:_ Uang muka diperlukan untuk memulai proses desain dan produksi. Terima kasih banyak atas kepercayaan Anda. 😊❤️\n\n`;
-      } else {
-        message += `_Catatan:_ Terima kasih banyak atas kepercayaan Anda. 😊❤️\n\n`;
-      }
-
-      message += `*ALLUNDANGAN - Wedding Card Specialist*`;
+      // Prepare Message
+      const message = `Halo *${clientName}*,\n\nBerikut rincian *INVOICE* resmi pemesanan kartu undangan Anda dari *ALLUNDANGAN*:\n\n` +
+                      `📌 *No. Invoice:* ${invNum}\n` +
+                      `📅 *Tanggal:* ${formatDateString(rawDate)}\n\n` +
+                      `*Rincian Pesanan:*\n${itemDetails}\n` +
+                      `${paymentSummary}\n` +
+                      `🏛️ *Pembayaran via Transfer:* \n` +
+                      `BCA Acc. *0095196107* a.n. Sutipna\n\n` +
+                      `${paymentNote}\n\n` +
+                      `*ALLUNDANGAN - Wedding Card Specialist*`;
 
       const encodedMessage = encodeURIComponent(message);
       
@@ -765,29 +753,27 @@ function doPost(e) {
       showToast("Membuka WhatsApp...", "success");
     }
 
-    // ACTIONS: DOWNLOAD AS PNG (FIXED: Absolutely no cutoffs & perfect alignment)
+    // ACTIONS: DOWNLOAD AS PNG
     function exportToImage() {
       const element = document.getElementById('invoice-preview');
       const invNum = document.getElementById('input-inv-num').value.padStart(3, '0');
       const clientName = document.getElementById('input-name').value || 'Klien';
       
-      showToast("Sedang memproses gambar berkualitas tinggi, mohon tunggu...", "success");
+      showToast("Sedang membuat file gambar, mohon tunggu...", "success");
 
-      // Set dynamic render options to eliminate scroll-clipping and cutoffs entirely
-      const renderOptions = {
-        scale: 3,                 // Ultra High-Res output
-        useCORS: true,            // Permits external fonts/assets loading
+      // Render configuration focusing exactly on A4 width and height coords 
+      html2canvas(element, {
+        scale: 2.5, // High resolution scaling
+        useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        width: 800,               // Rigid captured A4 width
-        height: 1130,             // Rigid captured A4 height
-        scrollX: 0,               // Forces reset of horizontal scrolls
-        scrollY: 0,               // Forces reset of vertical scrolls (PREVENTS CUTOFFS!)
-        windowWidth: 800,         // Forces mock viewport size 
-        windowHeight: 1130        // Forces mock viewport size
-      };
-
-      html2canvas(element, renderOptions).then(canvas => {
+        width: 800,
+        height: 1130,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 800,
+        windowHeight: 1130
+      }).then(canvas => {
         const link = document.createElement('a');
         link.download = `Invoice-${invNum}-INV-ALL-${clientName.replace(/\s+/g, '_')}.png`;
         link.href = canvas.toDataURL('image/png');
@@ -821,10 +807,10 @@ function doPost(e) {
       const clientPhone = document.getElementById('input-phone').value || '-';
       const totalVal = document.getElementById('preview-total').innerText.replace(/\./g, '');
       
-      // Conditional values based on active DP
-      const dpActive = document.getElementById('input-dp-active').checked;
-      const dpVal = dpActive ? document.getElementById('preview-dp').innerText.replace(/\./g, '') : '0';
-      const balanceVal = dpActive ? document.getElementById('preview-balance').innerText.replace(/\./g, '') : '0';
+      // Read DP values considering checked state
+      const useDP = document.getElementById('input-use-dp').checked;
+      const dpVal = useDP ? document.getElementById('preview-dp').innerText.replace(/\./g, '') : '0';
+      const balanceVal = useDP ? document.getElementById('preview-balance').innerText.replace(/\./g, '') : '0';
 
       // Create list items description
       const itemsSummary = invoiceItems.map(item => `${item.deskripsi} (${item.kuantitas} pcs x Rp ${formatIDR(item.harga)})`).join(', ');
@@ -841,9 +827,9 @@ function doPost(e) {
       };
 
       try {
-        const response = await fetch(webAppUrl, {
+        await fetch(webAppUrl, {
           method: 'POST',
-          mode: 'no-cors', // Needed because Google Apps Script redirects might fail standard CORS
+          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/json'
           },
